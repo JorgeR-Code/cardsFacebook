@@ -21,7 +21,7 @@ export class AppComponent {
     }
 
     ngOnInit(): void{
-      this.loadData();
+      // this.loadData();
 
       (window as any).fbAsyncInit = function() {
         FB.init({
@@ -47,12 +47,21 @@ export class AppComponent {
     submitLogin(){
       console.log("submit login to facebook");
       // FB.login();
+
       FB.login((response:any)=>
           {
-            console.log('submitLogin',response);
             if (response.authResponse)
             {
-              console.log('Ahuevoooooo');
+              FB.api(
+                '/me',
+                'GET',
+                {"fields":"id,name,likes,posts,friends"},
+                function(responseA:any) {
+                    // Insert your code here
+                    console.log('api',responseA);
+
+                }
+              );
             }
              else
              {
@@ -60,16 +69,17 @@ export class AppComponent {
            }
         });
 
+
     }
-    public loadData(){
-      this.RestService.get('https://graph.facebook.com/v12.0/me?fields=id%2Cfriends%2Clikes%2Cposts&access_token=EAAJeXlNNvNEBAMu691J1VzK8HCwfdiEn9nWxOW3Y7rFS9xeg3lb9vlKMsmxDAlF5QgoFJV42KQEZCCoyD53coNCWUZAoeUEPLRlZCAQnmYkvM2Vo5Ia0AvRUIc8vqZAw9pEdkf34vZBqP8b9b2LJpZAADeZAwSUH1NBnnVEnZAd6Hx6KXwqpG7l1HZCQwnkqdlBOOIrtPzwr18UDulWpZA0UT6Cd1PolZC5cZBQPQQY80159F8V237wgryKu')
-      .subscribe(respuesta =>{
-        this.datosList = respuesta;
-        this.friends = this.datosList.friends.summary.total_count;
-        this.likes = this.datosList.likes.data.length;
-        this.posts = this.datosList.posts.data.length;
-        console.log(this.datosList.posts.data.length);
-      })
-    }
+    // public loadData(){
+    //   this.RestService.get('https://graph.facebook.com/v12.0/me?fields=id%2Cfriends%2Clikes%2Cposts&access_token=EAAJeXlNNvNEBAMu691J1VzK8HCwfdiEn9nWxOW3Y7rFS9xeg3lb9vlKMsmxDAlF5QgoFJV42KQEZCCoyD53coNCWUZAoeUEPLRlZCAQnmYkvM2Vo5Ia0AvRUIc8vqZAw9pEdkf34vZBqP8b9b2LJpZAADeZAwSUH1NBnnVEnZAd6Hx6KXwqpG7l1HZCQwnkqdlBOOIrtPzwr18UDulWpZA0UT6Cd1PolZC5cZBQPQQY80159F8V237wgryKu')
+    //   .subscribe(respuesta =>{
+    //     this.datosList = respuesta;
+    //     this.friends = this.datosList.friends.summary.total_count;
+    //     this.likes = this.datosList.likes.data.length;
+    //     this.posts = this.datosList.posts.data.length;
+    //     console.log(this.datosList.posts.data.length);
+    //   })
+    // }
 
 }
