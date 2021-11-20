@@ -10,6 +10,8 @@ export class AppComponent {
   title = 'cardsFacebook';
   public datosList: any = [];
   friends:number = 0;
+  likes: number = 0;
+  posts: number = 0;
 
     constructor(private RestService: UserDataService){
 
@@ -21,11 +23,13 @@ export class AppComponent {
     }
 
     public loadData(){
-      this.RestService.get('https://graph.facebook.com/v12.0/me?fields=id%2Cfriends%2Clikes&access_token=EAAJeXlNNvNEBAIEb8OV5YKQmA4ihzkm4vGr6VBGU0s5XjcEobnbWSDz5qpm8090ZAQFkEQGm9VHKeiJgp7KNXKx3WkInJWZAdvVwwncve5Cg81wdvmbgeuNqBkIqssUpU2ZA1YzvFRSG90GDU2P6hPuHK1TIyOcl0utRD3wZCwcEY8VdSUZBVWsuI2XpJAmkxxKrEZA8HzEAZDZD')
+      this.RestService.get('https://graph.facebook.com/v12.0/me?fields=id%2Cfriends%2Clikes%2Cposts&access_token=EAAJeXlNNvNEBAMu691J1VzK8HCwfdiEn9nWxOW3Y7rFS9xeg3lb9vlKMsmxDAlF5QgoFJV42KQEZCCoyD53coNCWUZAoeUEPLRlZCAQnmYkvM2Vo5Ia0AvRUIc8vqZAw9pEdkf34vZBqP8b9b2LJpZAADeZAwSUH1NBnnVEnZAd6Hx6KXwqpG7l1HZCQwnkqdlBOOIrtPzwr18UDulWpZA0UT6Cd1PolZC5cZBQPQQY80159F8V237wgryKu')
       .subscribe(respuesta =>{
         this.datosList = respuesta;
         this.friends = this.datosList.friends.summary.total_count;
-        console.log(this.datosList.friends.summary.total_count);
+        this.likes = this.datosList.likes.data.length;
+        this.posts = this.datosList.posts.data.length;
+        console.log(this.datosList.posts.data.length);
       })
     }
 
