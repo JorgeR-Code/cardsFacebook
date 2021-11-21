@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { UserDataService } from './user-data.service';
 
 
@@ -13,20 +14,55 @@ export class AppComponent {
 
   title = 'cardsFacebook';
   datosList: any = [];
-  friends:number = 0;
+  friends: number = 0;
   likes: number = 0;
   posts: number = 0;
+  token: any;
+  loged: boolean = false;
 
 
-    constructor(private RestService: UserDataService){
+  constructor(public _datosService: UserDataService){
 
-    }
 
+  }
+
+conectarServicio(){
+
+  this.datosList = this._datosService.obtenerDatos();
+  this.friends = this.datosList.friends.summary.total_count;
+  this.likes = this.datosList.likes.data.length;
+  this.posts = this.datosList.posts.data.length;
+  console.log(this.datosList);
+
+  }
+
+
+login() {
+    FB.login((response:any) =>{
+        this.loged = true;
+        this.token = response;
+    }, {});
+}
+me() {
+
+      FB.api(
+            '/me',
+            'GET',
+            {"fields":"id,name,likes,posts,friends"},(responseA: any) => {
+              this.datosList = responseA;
+              this.friends = this.datosList.friends.summary.total_count;
+              this.likes = this.datosList.likes.data.length;
+              this.posts = this.datosList.posts.data.length;
+              console.log(this.posts);
+
+            }
+          );
+}
     ngOnInit(): void{
-      // this.loadData();
 
 
       (window as any).fbAsyncInit = function() {
+
         FB.init({
           appId      : '666709170961617',
           cookie     : true,
@@ -34,6 +70,33 @@ export class AppComponent {
           version    : 'v12.0'
         });
         FB.AppEvents.logPageView();
+
+        FB.getLoginStatus((response: any) => {
+          if (response.status === 'connected') {
+
+            FB.api(
+              '/me',
+              'GET',
+              {"fields":"id,name,likes,posts,friends"},(responseA: any) => {
+                this.datosList = responseA;
+                this.friends = this.datosList.friends.summary.total_count;
+                this.likes = this.datosList.likes.data.length;
+                this.posts = this.datosList.posts.data.length;
+                console.log(this.posts);
+
+              }
+            );
+            // this.conectarServicio();
+            console.log('connected');
+
+        } else {
+
+          console.log('no connected');
+          this.login();
+
+        }
+
+      });
       };
 
       (function(d, s, id){
@@ -51,36 +114,21 @@ export class AppComponent {
 
 
 
-    public submitLogin(){
+    //  public submitLogin(){
 
-      // FB.login();
-      FB.login((response:any)=>
-          {
-            if (response.authResponse)
-            {
-              this.mostrarDatos();
-            }
-             else
-             {
-             console.log('User login failed');
-           }
-        });
-    }
+    //   FB.api(
+    //     '/me',
+    //     'GET',
+    //     {"fields":"id,name,likes,posts,friends"},(responseA: any) => {
+    //       this.datosList = responseA;
+    //       this.friends = this.datosList.friends.summary.total_count;
+    //       this.likes = this.datosList.likes.data.length;
+    //       this.posts = this.datosList.posts.data.length;
+    //       console.log(this.posts);
 
+    //     }
+    //   );
+    //  }
 
-    public mostrarDatos(){
-      FB.api(
-        '/me',
-        'GET',
-        {"fields":"id,name,likes,posts,friends"},(responseA:any)=>{
-          this.datosList = responseA;
-          this.friends = this.datosList.friends.summary.total_count;
-          this.likes = this.datosList.likes.data.length;
-          this.posts = this.datosList.posts.data.length;
-          console.log(this.posts);
-
-        }
-      );
-    }
 
 }

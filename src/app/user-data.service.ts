@@ -1,15 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+
+
+
+declare var FB: any;
+
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class UserDataService {
 
-  constructor(private http: HttpClient) { }
 
-  public get(url: string){
-    return this.http.get(url);
+
+  datosList: any = [];
+
+  public obtenerDatos(){
+            FB.api(
+              '/me',
+              'GET',
+              {"fields":"id,name,likes,posts,friends"},(responseA:any)=>{
+                this.datosList = responseA;
+                return this.datosList;
+
+              }
+            );
   }
+
+  constructor() {
+
+
+
+  }
+
 
 }
