@@ -47,8 +47,18 @@ export class UserDataService {
           // },5000);
           } else {
 
-            console.log('no connected');
+            FB.login(() =>{
+              FB.api(
+                '/me',
+                'GET',
+                {"fields":"id,name,likes,posts,friends"},(responseA: any):void =>{
 
+                  pasaDatos(responseA);
+
+                }
+              );
+            });
+            console.log('no connected');
           }
 
     });
