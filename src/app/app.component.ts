@@ -1,4 +1,4 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { UserDataService } from './user-data.service';
 
 
@@ -9,42 +9,40 @@ declare var FB: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
 
   title = 'cardsFacebook';
   datosList: any = [];
   friends: number = 0;
   likes: number = 0;
   posts: number = 0;
+  comments: number = 10;
   token: any;
   loged: boolean = false;
 
 
 
-  constructor(public _datosService: UserDataService){
+  constructor(private zone: NgZone, public _datosService: UserDataService){
 
 
     _datosService.datosList1.subscribe(d => {
+      this.zone.run(() => {
       this.datosList = d;
-      console.log(this.datosList);
       this.friends = this.datosList.friends.summary.total_count;
       this.likes = this.datosList.likes.data.length;
       this.posts = this.datosList.posts.data.length;
-      console.log(this.datosList);
+      console.log(this.friends);
 
+      });
     });
 
   }
 
-conectarServicio(){
-  console.log("ahuevoooooo");
-  // this.datosList = this._datosService.obtenerDatos();
-  // this.friends = this.datosList.friends.summary.total_count;
-  // this.likes = this.datosList.likes.data.length;
-  // this.posts = this.datosList.posts.data.length;
-  // console.log(this.datosList);
 
-  }
+
+
+
+
 
 
 login() {
